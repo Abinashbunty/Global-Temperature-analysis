@@ -1,0 +1,35 @@
+---
+title: "R Notebook - Global Temprature"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+ClimateCityIndia %>% filter(Year==1904 | Year==2004) %>% ggplot(aes(AverageTemperature,Month,color=AverageTemperature)) + geom_quasirandom() + scale_colour_viridis() + facet_grid(Year ~.) + coord_flip()
+```
+
+```{r}
+ClimateCityIndia %>% filter( Year==1854 | Year==1900 | Year==1950 | Year==2004) %>% ggplot(aes(AverageTemperature,Year,color=AverageTemperature)) + geom_quasirandom() + scale_colour_viridis(option = "C")
+```
+
+```{r}
+Major_Cities<- c("Madras","Hyderabad", "Bombay", "Bangalore" , "Delhi" ,"Calcutta","Guwahati","Kochi") df <- ClimateCityIndia %>% filter(City %in% Major_Cities) ggplot(df,aes(AverageTemperature,label=paste(City,""))) + geom_density(fill="gray20") + facet_grid(City ~.) + ylab("") + geom_text(aes(0,0.2),family="Ubuntu Condensed",fontface="plain",hjust=0.1,color="gray20") + theme_minimal() +
+ggtitle("Density plot of average temperatures") + theme(text = element_text(family = 'Ubuntu Condensed', face = 'plain', color = '#3A3F4A'), axis.text.y = element_blank(), axis.ticks.y = element_blank(), axis.line.y = element_blank(), strip.background =element_blank(), strip.text.y = element_blank(), axis.line.x = element_blank(),
+plot.background = element_rect(fill = "#EFF2F4"), plot.title = element_text(size = 14, face = "bold", colour = "gray20", vjust = -1))
+```
+
+```{r}
+Major_Cities<- c("Madras","Hyderabad", "Bombay", "Bangalore" , "Delhi", "Calcutta","Guwahati","Shillong","Surat","Warangal")
+
+ClimateCityIndia %>% filter(City %in% Major_Cities) %>% group_by(City,Year) %>% summarise(avg_temp= mean(AverageTemperature)) %>% ggplot(aes(Year,avg_temp,color=avg_temp)) + geom_point() + scale_x_discrete( breaks = c(1796,2013)) + theme_minimal(base_family = "Ubuntu Condensed") + scale_color_viridis(option="B") + theme(axis.text.x = element_text(angle = 90, hjust = 1), panel.spacing = unit(0.6, "lines"), legend.position = "top", legend.text=element_text(size=8), panel.grid.major.y = element_blank(), panel.grid.minor.y = element_blank(), axis.ticks.y =
+element_blank(), axis.ticks.x = element_blank(), plot.background = element_rect(fill = "#EFF2F4"), legend.key.height = unit(10, "pt"), legend.key.width = unit(70, "pt")) + ggtitle("Temperature Change over the last two centuries",subtitle = "Indian Cities") + ylab("Temperature")+labs(color="Temperature") + facet_grid(~City )
+```
+
+
+```{r}
+ClimateCityIndia %>% filter(City %in% Major_Cities) %>% group_by(City,Month) %>% summarise(avg_temp = mean(AverageTemperature, na.rm=T)) %>% ggplot(aes(Month, reorder(City, avg_temp), fill=avg_temp)) + geom_tile() + scale_fill_viridis(option = "C") + theme_minimal(base_family = "Ubuntu Condensed")+ labs(fill= "Temperature ")+ ylab("") + theme(panel.grid= element_blank()) + ggtitle("Heatmap!",subtitle = "Cities,Months and Temperature")
+```
+
